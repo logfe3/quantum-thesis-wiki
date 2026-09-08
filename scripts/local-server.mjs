@@ -36,6 +36,14 @@ await stat(root).catch(() => {
   throw new Error("Static site directory does not exist: " + root)
 })
 
+const indexDocument = await readFile(path.join(root, "index.html"), "utf8").catch(() => "")
+const basePathMatch = indexDocument.match(/\bdata-basepath=["']([^"']*)["']/)
+const configuredBasePath = basePathMatch?.[1]?.trim() ?? ""
+const basePath =
+  configuredBasePath.startsWith("/") && !configuredBasePath.includes("..")
+    ? configuredBasePath.replace(/\/+$/, "")
+    : ""
+
 if (logFile) {
   await mkdir(path.dirname(logFile), { recursive: true })
 }
@@ -141,6 +149,10 @@ const server = createServer(async (request, response) => {
     response.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" })
     response.end("Bad request")
     return
+  }
+
+  if (basePath && (requestPath === basePath || requestPath.startsWith(basePath + "/"))) {
+    requestPath = requestPath.slice(basePath.length) || "/"
   }
 
   let filePath = await findFile(requestPath)

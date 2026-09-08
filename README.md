@@ -4,6 +4,8 @@
 
 参考站点的搜索、目录树、关系图谱、反向链接、悬浮预览、暗色模式与阅读模式均已保留；“许愿”功能未实现。
 
+在线站点：https://logfe3.github.io/quantum-thesis-wiki/
+
 ## 本地常驻部署
 
 部署脚本会生成生产版静态文件，注册当前用户的 Windows 登录自启任务，并仅监听本机回环地址：
@@ -30,7 +32,7 @@
 
 静态产物会生成在 public/，该目录已被 Git 忽略。
 
-正式发布前，请在 quartz.config.yaml 的 configuration 下补充实际 baseUrl。
+推送到 `main` 分支后，GitHub Actions 会自动构建并更新 GitHub Pages。
 
 ## 重新抽取论文
 

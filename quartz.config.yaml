@@ -2,6 +2,7 @@
 configuration:
   pageTitle: 量子器件百科
   pageTitleSuffix: "｜论文知识库"
+  baseUrl: logfe3.github.io/quantum-thesis-wiki
   enableSPA: true
   enablePopovers: true
   analytics: null
