@@ -69,7 +69,7 @@ export default (() => {
         <meta property="og:description" content={description} />
         <meta property="og:image:alt" content={description} />
 
-        {!usesCustomOgImage && (
+        {!usesCustomOgImage && cfg.baseUrl && (
           <>
             <meta property="og:image" content={ogImageDefaultPath} />
             <meta property="og:image:url" content={ogImageDefaultPath} />
@@ -92,6 +92,28 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
+
+        <script
+          data-wiki-scroll-fix
+          dangerouslySetInnerHTML={{
+            __html:
+              "(() => {" +
+              "if (window.__quantumWikiExplorerScrollFix) return;" +
+              "window.__quantumWikiExplorerScrollFix = true;" +
+              "const nativeScrollIntoView = Element.prototype.scrollIntoView;" +
+              "Element.prototype.scrollIntoView = function(options) {" +
+              'const explorer = this.closest?.(".explorer");' +
+              "if (!explorer) return nativeScrollIntoView.call(this, options);" +
+              'const list = explorer.querySelector(".explorer-ul");' +
+              "if (!list) return;" +
+              "const itemRect = this.getBoundingClientRect();" +
+              "const listRect = list.getBoundingClientRect();" +
+              "list.scrollTop += itemRect.top - listRect.top - " +
+              "(list.clientHeight - itemRect.height) / 2;" +
+              "};" +
+              "})()",
+          }}
+        />
 
         {css.map((resource) => CSSResourceToStyleElement(resource, true))}
         {js

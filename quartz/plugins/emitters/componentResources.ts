@@ -34,6 +34,12 @@ type ComponentResources = {
   componentCssStrings: Set<string>
 }
 
+function localizeComponentScript(script: string): string {
+  return script
+    .replaceAll("https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js", "/static/vendor/d3.min.js")
+    .replaceAll("https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.js", "/static/vendor/pixi.js")
+}
+
 function getComponentResources(ctx: BuildCtx): ComponentResources {
   const allComponents: Set<QuartzComponent> = new Set()
 
@@ -58,7 +64,9 @@ function getComponentResources(ctx: BuildCtx): ComponentResources {
     const { css, beforeDOMLoaded, afterDOMLoaded } = component
     for (const c of normalizeResource(css)) componentResources.css.add(c)
     for (const b of normalizeResource(beforeDOMLoaded)) componentResources.beforeDOMLoaded.add(b)
-    for (const a of normalizeResource(afterDOMLoaded)) componentResources.afterDOMLoaded.add(a)
+    for (const a of normalizeResource(afterDOMLoaded)) {
+      componentResources.afterDOMLoaded.add(localizeComponentScript(a))
+    }
   }
 
   return {

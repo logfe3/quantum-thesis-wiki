@@ -70,6 +70,17 @@ export function pageResources(
       spaPreserve: resource.spaPreserve,
     }
   })
+  const localizedCss = resolvedCss.map((resource) =>
+    resource.content === "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      ? { ...resource, content: joinSegments(baseDir, "static/katex/katex.min.css") }
+      : resource,
+  )
+  const localizedJs = resolvedJs.map((resource) =>
+    resource.contentType === "external" &&
+    resource.src === "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js"
+      ? { ...resource, src: joinSegments(baseDir, "static/katex/copy-tex.min.js") }
+      : resource,
+  )
 
   const contentIndexPath = joinSegments(baseDir, "static/contentIndex.json")
   const contentIndexScript = `const fetchData = fetch("${contentIndexPath}").then(data => data.json())`
@@ -80,7 +91,7 @@ export function pageResources(
         content: joinSegments(baseDir, cssFile),
       },
       ...componentCssResources,
-      ...resolvedCss,
+      ...localizedCss,
     ],
     js: [
       {
@@ -94,7 +105,7 @@ export function pageResources(
         spaPreserve: true,
         script: contentIndexScript,
       },
-      ...resolvedJs,
+      ...localizedJs,
     ],
     additionalHead: staticResources.additionalHead,
   }

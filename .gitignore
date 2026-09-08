@@ -12,3 +12,7 @@ replit.nix
 .quartz/
 quartz/cli/tui/dist/
 .turbo/
+.venv/
+.extracted/
+tmp/
+.local-deploy/
