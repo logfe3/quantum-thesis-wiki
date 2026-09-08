@@ -34,10 +34,20 @@ type ComponentResources = {
   componentCssStrings: Set<string>
 }
 
-function localizeComponentScript(script: string): string {
+function localizeComponentScript(script: string, ctx: BuildCtx): string {
+  const baseUrl = ctx.cfg.configuration.baseUrl
+  const basePath =
+    ctx.argv.serve || !baseUrl ? "" : new URL(`https://${baseUrl}`).pathname.replace(/\/$/, "")
+
   return script
-    .replaceAll("https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js", "/static/vendor/d3.min.js")
-    .replaceAll("https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.js", "/static/vendor/pixi.js")
+    .replaceAll(
+      "https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js",
+      `${basePath}/static/vendor/d3.min.js`,
+    )
+    .replaceAll(
+      "https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.js",
+      `${basePath}/static/vendor/pixi.js`,
+    )
 }
 
 function getComponentResources(ctx: BuildCtx): ComponentResources {
@@ -65,7 +75,7 @@ function getComponentResources(ctx: BuildCtx): ComponentResources {
     for (const c of normalizeResource(css)) componentResources.css.add(c)
     for (const b of normalizeResource(beforeDOMLoaded)) componentResources.beforeDOMLoaded.add(b)
     for (const a of normalizeResource(afterDOMLoaded)) {
-      componentResources.afterDOMLoaded.add(localizeComponentScript(a))
+      componentResources.afterDOMLoaded.add(localizeComponentScript(a, ctx))
     }
   }
 
